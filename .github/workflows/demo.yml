@@ -10,7 +10,7 @@ jobs:
       - name: Get code
         uses: actions/checkout@v3
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       - name: Lint code
         run: npm run lint
       - name: Test code
@@ -22,9 +22,11 @@ jobs:
       - name: Get code
         uses: actions/checkout@v3
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       - name: Build website
         run: npm run build
+      - name: Publish JS filename  #Es un ejemplo de job outputs, en este caso buscamos encontrar el valor producido anteriormente en la carpeta dist, el nombre del archivo JS
+        run: find dist/assets/*.js -type f -execdir echo '{}' ';' #Este es un comando de linux, el cual busca en la carpeta anidada todos los archivos J, y los muestra con el comando "Echo"
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
