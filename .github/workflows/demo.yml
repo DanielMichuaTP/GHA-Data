@@ -9,6 +9,11 @@ jobs:
     steps:
       - name: Get code
         uses: actions/checkout@v3
+      - name: Cache dependencies #agregamos un step para el cache dependencie
+        uses: actions/cache@v3 #agregamos el action para ello
+        with: #con el with, agregamos la configuracion de la ruta
+          path: ~/.npm #este puede variar acorde al lenguaje usado, en este caso es JS, por ello es npm, y ella es la ruta para ver dicha version
+          key: deps-node-modules-${{ hasFiles('**/package-lock.json') }} #al final, agregamos la ruta donde se almacenan las versiones
       - name: Install dependencies
         run: npm ci
       - name: Lint code
