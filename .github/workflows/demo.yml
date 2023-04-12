@@ -18,6 +18,9 @@ jobs:
   build:
     needs: test
     runs-on: ubuntu-latest
+    outputs: #para agregar el identificador del output que sera usado en demas Jobs, se "declara a este nivel, al nivel de la VM"
+      script-file: ${{ steps.publish.outputs.script-file }} #Se pueden crear los outputs que querramos, no hay un numero definido para poder crear, y se le puede poner el nombre que querramos
+      #Una vez agregamos el context, agregamos el Steps, para referirse que sera al Step, y posteriormente agregamos el id del step al que nos queremos referir, por medio del punto, posteriormente referenciamos que es un output, y para rematar ponemos el nombre que le asignamos a la "variable" en donde se asigna
     steps:
       - name: Get code
         uses: actions/checkout@v3
@@ -26,7 +29,8 @@ jobs:
       - name: Build website
         run: npm run build
       - name: Publish JS filename  #Es un ejemplo de job outputs, en este caso buscamos encontrar el valor producido anteriormente en la carpeta dist, el nombre del archivo JS
-        run: find dist/assets/*.js -type f -execdir echo '{}' ';' #Este es un comando de linux, el cual busca en la carpeta anidada todos los archivos J, y los muestra con el comando "Echo"
+        id: publish #para poder accesar desde scrpit-files a este output value, se le tiene si o si agregar el ID, el nombre puede ser el que sea
+        run: find dist/assets/*.js -type f -execdir echo 'script-file={}' >>$GITHUB_OUTPUT ';' #Este es un comando de linux, el cual busca en la carpeta anidada todos los archivos J, y los muestra con el comando "Echo". Una vez agregamos el identificador, agregamos el nomnbre que querramos a la salida, en donde esta '{}', puede ser diferente al definido anteriormente, ya que es el nombre de este paso, no de todo el "identificador", despues del nombre local, ponemos "=", para definir que esa variable tendra ese valor, es como pasar un pipe de un valor a otro, y dicha variable es la que podra se accesada desde cualquier Job, en este caso es igual al resultado de busqueda del archivo por el "{}". Y al final se le agrega >> $GITHUB_OUTPUT, para referir que dicha variable apunta a un "archivo" especial para github en donde se ponen y se almacenan todas las variables "globales", que se usaran en el entorno que se trabaje
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
