@@ -44,3 +44,6 @@ jobs:
     steps:
       - name: Deploy
         run: echo "Deploying..."
+      - name: Output filename
+        run: echo "${{ needs.build.outputs.script-file }}" #se pone el object context "needs", para obtener la info de otros jobs
+        #Necesita el needs, ya que este job depende de build, posteriormente el output, ya que es un job output, y finaliza con el nombre de la "variable"
